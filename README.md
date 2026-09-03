@@ -1,85 +1,113 @@
-# Personalized Product Recommendation & Ranking Platform
+# Causal Uplift Modeling for Promotional Targeting
 
-## Project Overview
+## 📌 Project Overview
 
-An end-to-end machine learning system that learns from customer-product
-interactions to generate personalized product recommendations and rank
-products based on the likelihood of user engagement.
+Have you ever wondered:
 
-The project is designed as a production-oriented recommendation system,
-covering data ingestion, data quality, feature engineering, candidate
-generation, ranking, offline evaluation, experimentation, model serving,
-and monitoring.
+> **"Which customers should actually get a discount?"**
 
-## Problem Statement
+Giving a discount to everyone is not always a good idea.
 
-E-commerce platforms have a large number of products, making it difficult
-for customers to discover products that are relevant to them.
+Some customers will buy even without a discount. Giving them a coupon only reduces the company's profit.
 
-The objective of this project is to build a personalized recommendation
-and ranking system that:
+Some customers will buy **only because** they received the coupon. These are the customers we really want to target.
 
-1. Learns customer preferences from historical interactions.
-2. Generates a relevant set of candidate products.
-3. Ranks candidates for each customer.
-4. Handles challenges such as sparse interactions and cold-start users.
-5. Evaluates recommendation quality using ranking-specific metrics.
-6. Provides recommendations through an API.
-7. Demonstrates how the system could be evaluated through experimentation.
+This project uses **Causal Uplift Modeling** to identify those customers.
 
-## Core ML Problem
+---
 
-Given a customer's historical interactions and product information,
-predict and rank the products that are most relevant to that customer.
+## 🎯 What Are We Trying to Predict?
 
-### Input
+A normal machine learning model might tell us:
 
-- Customer interaction history
-- Product information
-- Historical purchases/interactions
-- Temporal information
-- User and product features
+> "This customer has a 75% chance of buying."
 
-### Output
+But that is not enough.
 
-A ranked list of Top-K personalized product recommendations.
+We want to answer:
 
-## Key Objectives
+> **"How much more likely is this customer to buy because of the promotion?"**
 
-- Build strong popularity-based baselines.
-- Develop collaborative and content-based recommendation approaches.
-- Build a hybrid recommendation system.
-- Develop a candidate-generation and ranking pipeline.
-- Evaluate models using Precision@K, Recall@K, MAP@K and NDCG@K.
-- Address cold-start and sparse-interaction problems.
-- Build an API for recommendation serving.
-- Automate the ML pipeline.
-- Monitor model and data quality.
+For example:
 
-## High-Level Architecture
+| Customer | Without Coupon | With Coupon | Uplift |
+|---|---:|---:|---:|
+| A | 20% | 75% | +55% |
+| B | 80% | 82% | +2% |
+| C | 5% | 7% | +2% |
 
-Data Source
-    ↓
-Data Ingestion
-    ↓
-Data Validation
-    ↓
-SQL / Data Processing
-    ↓
-Feature Engineering
-    ↓
-Candidate Generation
-    ↓
-Ranking Model
-    ↓
-Recommendation API
-    ↓
-Product UI
+Customer A is the most interesting customer because the promotion changes their behavior significantly.
 
-## Important Design Principles
+---
 
-- Prevent data leakage using time-based validation.
-- Compare every advanced model against simple baselines.
-- Separate candidate generation from ranking.
-- Evaluate both relevance and recommendation diversity.
-- Design the system with production considerations in mind.
+## 👥 Customer Types
+
+We can divide customers into four groups:
+
+### 1. Persuadables ⭐
+
+They don't buy without the promotion but are likely to buy with it.
+
+**→ These are our main target customers.**
+
+### 2. Sure Things
+
+They are likely to buy even without the promotion.
+
+**→ Don't waste a discount on them.**
+
+### 3. Lost Causes
+
+They are unlikely to buy with or without the promotion.
+
+**→ Don't target them.**
+
+### 4. Sleeping Dogs
+
+They may buy without the promotion but could respond negatively to the treatment.
+
+**→ Avoid targeting them.**
+
+---
+
+## 📊 Dataset
+
+We are using the **Criteo Uplift Modeling Dataset**.
+
+The dataset contains information about:
+
+- Customer features
+- Whether the customer received a treatment
+- Whether the customer visited
+- Whether the customer converted
+
+The dataset allows us to compare customers who received the treatment with customers who did not.
+
+---
+
+## 🧠 How the Project Will Work
+
+The project will be built step-by-step:
+
+```text
+Dataset
+   ↓
+Understand the Data
+   ↓
+Clean & Validate Data
+   ↓
+Explore Treatment vs Control
+   ↓
+Build Normal ML Baseline
+   ↓
+Build Uplift Models
+   ↓
+Measure Uplift
+   ↓
+Identify Persuadable Customers
+   ↓
+Calculate Business Value
+   ↓
+Build API
+   ↓
+Build Simple UI
